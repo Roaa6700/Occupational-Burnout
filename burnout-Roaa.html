@@ -1,0 +1,574 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>الاحتراق الوظيفي — رحلة الانهيار الصامت</title>
+<link href="https://fonts.googleapis.com/css2?family=Cairo:wght@300;400;600;700;900&family=Tajawal:wght@300;400;500;700;800&display=swap" rel="stylesheet">
+<style>
+  :root {
+    --bg: #0d0d0f;
+    --surface: #141416;
+    --card: #1a1a1e;
+    --border: #2a2a30;
+    --green: #4ade80;
+    --yellow: #fbbf24;
+    --orange: #f97316;
+    --red: #ef4444;
+    --red-dark: #991b1b;
+    --text: #f0f0f0;
+    --muted: #888;
+    --accent: #e85d75;
+  }
+
+  * { margin: 0; padding: 0; box-sizing: border-box; }
+
+  body {
+    background: var(--bg);
+    color: var(--text);
+    font-family: 'Cairo', sans-serif;
+    min-height: 100vh;
+    overflow-x: hidden;
+  }
+
+  /* ─── HERO ─── */
+  .hero {
+    position: relative;
+    text-align: center;
+    padding: 70px 20px 50px;
+    overflow: hidden;
+  }
+  .hero::before {
+    content: '';
+    position: absolute;
+    inset: 0;
+    background: radial-gradient(ellipse 80% 60% at 50% 0%, rgba(232,93,117,0.18) 0%, transparent 70%);
+    pointer-events: none;
+  }
+  .hero-eyebrow {
+    font-family: 'Tajawal', sans-serif;
+    font-size: 12px;
+    font-weight: 500;
+    letter-spacing: 4px;
+    color: var(--accent);
+    text-transform: uppercase;
+    margin-bottom: 18px;
+    opacity: 0;
+    animation: fadeUp 0.7s 0.1s forwards;
+  }
+  .hero h1 {
+    font-family: 'Tajawal', sans-serif;
+    font-size: clamp(2.4rem, 7vw, 5rem);
+    font-weight: 800;
+    line-height: 1.1;
+    margin-bottom: 16px;
+    opacity: 0;
+    animation: fadeUp 0.7s 0.25s forwards;
+  }
+  .hero h1 span { color: var(--accent); }
+  .hero-sub {
+    font-size: clamp(0.95rem, 2vw, 1.15rem);
+    color: var(--muted);
+    max-width: 560px;
+    margin: 0 auto 40px;
+    line-height: 1.7;
+    opacity: 0;
+    animation: fadeUp 0.7s 0.4s forwards;
+  }
+  .flame-row {
+    display: flex;
+    justify-content: center;
+    gap: 6px;
+    font-size: 2rem;
+    opacity: 0;
+    animation: fadeUp 0.7s 0.55s forwards;
+  }
+  .flame-row span { animation: flicker 2s infinite alternate; }
+  .flame-row span:nth-child(2) { animation-delay: 0.3s; font-size: 2.6rem; }
+  .flame-row span:nth-child(3) { animation-delay: 0.6s; }
+
+  /* ─── DIVIDER ─── */
+  .divider {
+    width: 100%;
+    height: 1px;
+    background: linear-gradient(to left, transparent, var(--border), transparent);
+    margin: 10px 0;
+  }
+
+  /* ─── SECTION WRAPPER ─── */
+  .section {
+    max-width: 1000px;
+    margin: 0 auto;
+    padding: 50px 20px;
+    opacity: 0;
+    transform: translateY(30px);
+    transition: opacity 0.7s, transform 0.7s;
+  }
+  .section.visible { opacity: 1; transform: none; }
+
+  .section-label {
+    font-size: 11px;
+    letter-spacing: 3px;
+    font-weight: 700;
+    color: var(--accent);
+    text-transform: uppercase;
+    margin-bottom: 10px;
+  }
+  .section-title {
+    font-family: 'Tajawal', sans-serif;
+    font-size: clamp(1.5rem, 4vw, 2.2rem);
+    font-weight: 700;
+    margin-bottom: 8px;
+  }
+  .section-desc {
+    color: var(--muted);
+    font-size: 0.95rem;
+    line-height: 1.7;
+    margin-bottom: 36px;
+    max-width: 650px;
+  }
+
+  /* ─── COMPARISON CARDS ─── */
+  .compare-grid {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 16px;
+  }
+  @media (max-width: 600px) { .compare-grid { grid-template-columns: 1fr; } }
+
+  .compare-card {
+    background: var(--card);
+    border: 1px solid var(--border);
+    border-radius: 16px;
+    padding: 28px 24px;
+    position: relative;
+    overflow: hidden;
+  }
+  .compare-card::before {
+    content: '';
+    position: absolute;
+    top: 0; right: 0;
+    width: 120px; height: 120px;
+    border-radius: 50%;
+    opacity: 0.07;
+    transform: translate(40px, -40px);
+  }
+  .compare-card.stress::before { background: var(--yellow); }
+  .compare-card.burnout::before { background: var(--red); }
+
+  .compare-card .badge {
+    display: inline-block;
+    font-size: 11px;
+    font-weight: 700;
+    padding: 4px 12px;
+    border-radius: 20px;
+    margin-bottom: 16px;
+    letter-spacing: 1px;
+  }
+  .stress .badge { background: rgba(251,191,36,0.15); color: var(--yellow); border: 1px solid rgba(251,191,36,0.3); }
+  .burnout .badge { background: rgba(239,68,68,0.15); color: var(--red); border: 1px solid rgba(239,68,68,0.3); }
+
+  .compare-card h3 {
+    font-family: 'Tajawal', sans-serif;
+    font-size: 1.3rem;
+    font-weight: 700;
+    margin-bottom: 14px;
+  }
+  .compare-list { list-style: none; }
+  .compare-list li {
+    font-size: 0.9rem;
+    color: #ccc;
+    padding: 7px 0;
+    border-bottom: 1px solid var(--border);
+    display: flex;
+    align-items: flex-start;
+    gap: 10px;
+    line-height: 1.5;
+  }
+  .compare-list li:last-child { border-bottom: none; }
+  .compare-list li::before { content: '—'; color: var(--muted); flex-shrink: 0; margin-top: 1px; }
+
+  /* ─── TIMELINE ─── */
+  .timeline { position: relative; padding-right: 32px; }
+  .timeline::before {
+    content: '';
+    position: absolute;
+    right: 10px; top: 0; bottom: 0;
+    width: 2px;
+    background: linear-gradient(to bottom, var(--green), var(--yellow), var(--orange), var(--red), var(--red-dark));
+  }
+
+  .tl-item {
+    position: relative;
+    margin-bottom: 8px;
+    cursor: pointer;
+  }
+  .tl-dot {
+    position: absolute;
+    right: -26px;
+    top: 18px;
+    width: 14px; height: 14px;
+    border-radius: 50%;
+    border: 2px solid var(--bg);
+    transition: transform 0.2s;
+  }
+  .tl-item:hover .tl-dot { transform: scale(1.4); }
+
+  .tl-card {
+    background: var(--card);
+    border: 1px solid var(--border);
+    border-radius: 12px;
+    padding: 16px 20px;
+    transition: border-color 0.2s, background 0.2s;
+  }
+  .tl-item:hover .tl-card {
+    background: #1f1f25;
+    border-color: #3a3a42;
+  }
+
+  .tl-header {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 12px;
+  }
+  .tl-num {
+    font-family: 'Tajawal', sans-serif;
+    font-size: 0.75rem;
+    font-weight: 700;
+    color: var(--muted);
+    flex-shrink: 0;
+  }
+  .tl-title {
+    font-family: 'Tajawal', sans-serif;
+    font-size: 1rem;
+    font-weight: 700;
+    flex: 1;
+  }
+  .tl-tag {
+    font-size: 10px;
+    font-weight: 700;
+    padding: 3px 10px;
+    border-radius: 20px;
+    letter-spacing: 0.5px;
+    white-space: nowrap;
+  }
+  .tl-body {
+    font-size: 0.85rem;
+    color: #aaa;
+    line-height: 1.6;
+    margin-top: 10px;
+    max-height: 0;
+    overflow: hidden;
+    transition: max-height 0.4s ease, margin 0.3s;
+  }
+  .tl-item.open .tl-body { max-height: 200px; }
+  .tl-chevron { color: var(--muted); font-size: 0.8rem; transition: transform 0.3s; }
+  .tl-item.open .tl-chevron { transform: rotate(180deg); }
+
+  /* phase colors */
+  .phase-1 .tl-dot { background: var(--green); }
+  .phase-1 .tl-tag { background: rgba(74,222,128,0.15); color: var(--green); }
+  .phase-2 .tl-dot { background: var(--yellow); }
+  .phase-2 .tl-tag { background: rgba(251,191,36,0.15); color: var(--yellow); }
+  .phase-3 .tl-dot { background: var(--orange); }
+  .phase-3 .tl-tag { background: rgba(249,115,22,0.15); color: var(--orange); }
+  .phase-4 .tl-dot { background: var(--red); }
+  .phase-4 .tl-tag { background: rgba(239,68,68,0.15); color: var(--red); }
+  .phase-5 .tl-dot { background: var(--red-dark); }
+  .phase-5 .tl-tag { background: rgba(153,27,27,0.2); color: #fca5a5; }
+
+  /* ─── WARNING SIGNS ─── */
+  .signs-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+    gap: 14px;
+  }
+  .sign-card {
+    background: var(--card);
+    border: 1px solid var(--border);
+    border-radius: 14px;
+    padding: 20px 18px;
+    transition: transform 0.2s, border-color 0.2s;
+    cursor: default;
+  }
+  .sign-card:hover { transform: translateY(-3px); border-color: var(--accent); }
+  .sign-icon { font-size: 1.8rem; margin-bottom: 10px; }
+  .sign-title { font-family: 'Tajawal', sans-serif; font-weight: 700; font-size: 0.95rem; margin-bottom: 6px; }
+  .sign-desc { font-size: 0.82rem; color: var(--muted); line-height: 1.55; }
+
+  /* ─── METER ─── */
+  .meter-wrap { margin-bottom: 16px; }
+  .meter-label {
+    display: flex;
+    justify-content: space-between;
+    font-size: 0.85rem;
+    color: #ccc;
+    margin-bottom: 7px;
+  }
+  .meter-bar {
+    height: 10px;
+    background: var(--border);
+    border-radius: 10px;
+    overflow: hidden;
+  }
+  .meter-fill {
+    height: 100%;
+    border-radius: 10px;
+    width: 0;
+    transition: width 1.4s cubic-bezier(0.4,0,0.2,1);
+  }
+  .meter-fill.animated { width: var(--target); }
+
+  /* ─── TIPS ─── */
+  .tips-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
+    gap: 14px;
+  }
+  .tip-card {
+    background: var(--card);
+    border: 1px solid var(--border);
+    border-radius: 14px;
+    padding: 22px 20px;
+    border-top: 3px solid var(--green);
+    transition: transform 0.2s;
+  }
+  .tip-card:hover { transform: translateY(-3px); }
+  .tip-num { font-family: 'Tajawal', sans-serif; font-size: 2rem; font-weight: 900; color: rgba(74,222,128,0.2); margin-bottom: 8px; }
+  .tip-title { font-family: 'Tajawal', sans-serif; font-weight: 700; font-size: 1rem; margin-bottom: 8px; }
+  .tip-desc { font-size: 0.84rem; color: var(--muted); line-height: 1.6; }
+
+  /* ─── FOOTER ─── */
+  .footer {
+    text-align: center;
+    padding: 40px 20px;
+    font-size: 0.8rem;
+    color: #555;
+    border-top: 1px solid var(--border);
+  }
+
+  /* ─── ANIMATIONS ─── */
+  @keyframes fadeUp {
+    from { opacity: 0; transform: translateY(20px); }
+    to   { opacity: 1; transform: none; }
+  }
+  @keyframes flicker {
+    0%   { transform: scaleY(1) rotate(-2deg); }
+    100% { transform: scaleY(1.1) rotate(2deg); }
+  }
+</style>
+</head>
+<body>
+
+<!-- HERO -->
+<section class="hero">
+  <p class="hero-eyebrow">توعية وظيفية · ٢٠٢٦</p>
+  <h1>الاحتراق <span>الوظيفي</span><br>رحلة الانهيار الصامت</h1>
+  <p class="hero-sub">ليس مجرد تعب — الاحتراق الوظيفي حالة نفسية معقدة تتراكم ببطء. كلما عرفتها مبكراً، كلما كان الخروج منها أسهل.</p>
+  <div class="flame-row"><span>🔥</span><span>🔥</span><span>🔥</span></div>
+</section>
+
+<div class="divider"></div>
+
+<!-- COMPARE -->
+<div class="section" id="s1">
+  <p class="section-label">الفرق الجوهري</p>
+  <h2 class="section-title">الإجهاد ≠ الاحتراق</h2>
+  <p class="section-desc">كثيرون يخلطون بين الاثنين — لكن الفرق في الجذر والعلاج.</p>
+  <div class="compare-grid">
+    <div class="compare-card stress">
+      <span class="badge">STRESS · إجهاد</span>
+      <h3>الضغط العادي</h3>
+      <ul class="compare-list">
+        <li>ناتج عن ضغط زائد ومؤقت</li>
+        <li>المشاعر لا تزال حاضرة (قلق، توتر)</li>
+        <li>الراحة تُعالجه</li>
+        <li>تشعر بأنك قادر لو توقف الضغط</li>
+        <li>الجسم والعقل متحفزان أكثر من اللازم</li>
+      </ul>
+    </div>
+    <div class="compare-card burnout">
+      <span class="badge">BURNOUT · احتراق</span>
+      <h3>الاحتراق الوظيفي</h3>
+      <ul class="compare-list">
+        <li>ناتج عن إجهاد مزمن ومتراكم لأشهر</li>
+        <li>فراغ عاطفي — لا تشعر بشيء</li>
+        <li>الراحة لا تكفي وحدها</li>
+        <li>تشعر بعدم الجدوى حتى بدون ضغط</li>
+        <li>الجسم والعقل منهكان تماماً</li>
+      </ul>
+    </div>
+  </div>
+</div>
+
+<div class="divider"></div>
+
+<!-- TIMELINE -->
+<div class="section" id="s2">
+  <p class="section-label">نموذج Freudenberger</p>
+  <h2 class="section-title">المراحل الـ ١٢ للاحتراق</h2>
+  <p class="section-desc">الاحتراق لا يأتي فجأة — يمر بمراحل متدرجة. اضغط على كل مرحلة لمعرفة التفاصيل.</p>
+  <div class="timeline" id="timeline"></div>
+</div>
+
+<div class="divider"></div>
+
+<!-- WARNING SIGNS -->
+<div class="section" id="s3">
+  <p class="section-label">التشخيص المبكر</p>
+  <h2 class="section-title">علامات التحذير المبكرة</h2>
+  <p class="section-desc">هذه الإشارات تظهر قبل الوصول للمراحل المتقدمة — انتبه لها في نفسك وفريقك.</p>
+  <div class="signs-grid" id="signsGrid"></div>
+</div>
+
+<div class="divider"></div>
+
+<!-- IMPACT METER -->
+<div class="section" id="s4">
+  <p class="section-label">التأثير على الأداء</p>
+  <h2 class="section-title">كيف يؤثر الاحتراق على العمل</h2>
+  <p class="section-desc">الأرقام تعكس نسب التراجع المُوثَّقة في الدراسات.</p>
+  <div id="meters"></div>
+</div>
+
+<div class="divider"></div>
+
+<!-- TIPS -->
+<div class="section" id="s5">
+  <p class="section-label">الوقاية والعلاج</p>
+  <h2 class="section-title">كيف تحمي نفسك وفريقك</h2>
+  <p class="section-desc">لا حل سحري — لكن هذه الخطوات مدعومة بالبحث العلمي.</p>
+  <div class="tips-grid" id="tipsGrid"></div>
+</div>
+
+<div class="footer">
+  مصادر: Maslach & Leiter (1997) · Freudenberger (1974) · WHO ICD-11 · Journal of Occupational Health Psychology
+</div>
+
+<script>
+// ── DATA ──────────────────────────────────────────────
+const phases = [
+  { phase:1, num:"01", title:"الطموح المفرط", tag:"أخضر — مبكر", body:"تبدأ بحماس كبير وتتطوع لأكثر مما تستطيع. الحدود غير موجودة والعمل يستهلك كل وقتك بشكل ممتع في البداية." },
+  { phase:1, num:"02", title:"العمل بجهد أكثر", tag:"أخضر — مبكر", body:"تعوّض النقص بزيادة ساعات العمل. تبدأ بإهمال الاحتياجات الأساسية كالنوم والوجبات." },
+  { phase:2, num:"03", title:"إهمال الاحتياجات", tag:"أصفر — تحذير", body:"النوم والرياضة والعلاقات الاجتماعية تتراجع. تبرر ذلك بأنه مؤقت." },
+  { phase:2, num:"04", title:"تحويل النزاعات", tag:"أصفر — تحذير", body:"تُدرك أن شيئاً ليس على ما يرام لكن تُرجع المشكلة لعوامل خارجية — المدير، الزملاء، الظروف." },
+  { phase:2, num:"05", title:"مراجعة القيم", tag:"أصفر — تحذير", body:"تتغير أولوياتك. الأشياء التي كانت مهمة لك تبدو تافهة. يضعف اهتمامك بالعائلة والهوايات." },
+  { phase:3, num:"06", title:"الإنكار", tag:"برتقالي — خطر", body:"تبدأ بإنكار المشاكل. تصف الآخرين بالضعف أو الكسل بدلاً من الاعتراف بإجهادك." },
+  { phase:3, num:"07", title:"الانسحاب الاجتماعي", tag:"برتقالي — خطر", body:"تتجنب الأشخاص والفعاليات. الانعزال يصبح ملاذاً وليس اختياراً." },
+  { phase:3, num:"08", title:"تغيرات واضحة في السلوك", tag:"برتقالي — خطر", body:"يُلاحظ الآخرون تغيراً فيك. ردود أفعالك تصبح غير متوقعة أو عدوانية." },
+  { phase:4, num:"09", title:"إلغاء الشخصية", tag:"أحمر — حرج", body:"تشعر بانفصال عن نفسك وعن عملك. تؤدي مهامك كآلة بلا معنى." },
+  { phase:4, num:"10", title:"الفراغ الداخلي", tag:"أحمر — حرج", body:"إحساس عميق بالخواء. قد تلجأ لمحاولة ملء هذا الفراغ بطرق غير صحية." },
+  { phase:5, num:"11", title:"الاكتئاب", tag:"أحمر غامق — أزمة", body:"فقدان الأمل والمعنى. كل شيء يبدو ثقيلاً ومستحيلاً. هنا يصبح التدخل المهني ضرورياً." },
+  { phase:5, num:"12", title:"الانهيار التام", tag:"أحمر غامق — أزمة", body:"الجسم والعقل ينهاران تماماً. قد يظهر كأمراض جسدية حادة أو أزمة نفسية كاملة." },
+];
+
+const signs = [
+  { icon:"😶", title:"التبلّد العاطفي", desc:"لا تشعر بالفرح ولا بالحزن — كأن المشاعر تجمّدت" },
+  { icon:"💤", title:"الإرهاق الدائم", desc:"تنام ساعات كافية لكن تستيقظ منهكاً" },
+  { icon:"🎯", title:"تراجع التركيز", desc:"صعوبة في إتمام مهام كانت سهلة سابقاً" },
+  { icon:"😤", title:"التهيج السريع", desc:"أشياء صغيرة تستفزك بشكل مبالغ فيه" },
+  { icon:"🚪", title:"تجنب العمل", desc:"تؤجل البدء وتجد أعذاراً للابتعاد عن المكتب" },
+  { icon:"🤒", title:"أمراض متكررة", desc:"مناعتك تضعف — صداع، آلام ظهر، نزلات برد متكررة" },
+  { icon:"🔕", title:"العزلة الاجتماعية", desc:"تتجنب الاجتماعات والمناسبات وحتى الزملاء" },
+  { icon:"❓", title:"فقدان الهدف", desc:"لم تعد ترى معنى أو قيمة فيما تعمله" },
+];
+
+const meters = [
+  { label:"تراجع الإنتاجية", val:63, color:"var(--red)" },
+  { label:"ارتفاع نسبة الأخطاء", val:55, color:"var(--orange)" },
+  { label:"تراجع الإبداع وحل المشكلات", val:70, color:"var(--yellow)" },
+  { label:"ضعف التواصل مع الفريق", val:58, color:"var(--accent)" },
+];
+
+const tips = [
+  { num:"01", title:"حدّد حدودك", desc:"قل لا للمهام الإضافية بثقة. الحدود الصحية ليست أنانية — هي استثمار في استدامتك." },
+  { num:"02", title:"نوم لا تفاوض عليه", desc:"٧-٩ ساعات ليست رفاهية. قلة النوم هي أسرع طريق للاحتراق." },
+  { num:"03", title:"فصل العمل والحياة", desc:"أوقات محددة للعمل وأوقات بلا إيميلات أو رسائل. الدماغ يحتاج وقتاً للفصل." },
+  { num:"04", title:"تحدث عن ما تشعر به", desc:"مع مدير تثق به أو زميل أو مختص. الصمت يُضخّم الاحتراق." },
+  { num:"05", title:"راقب فريقك", desc:"علامات الانسحاب والصمت والأخطاء المتكررة — تدخل مبكراً بحوار خاص وداعم." },
+  { num:"06", title:"اطلب المساعدة المتخصصة", desc:"المعالج النفسي المتخصص في بيئة العمل يُقدم أدوات لا تجدها وحدك." },
+];
+
+// ── RENDER ────────────────────────────────────────────
+function renderTimeline() {
+  const tl = document.getElementById('timeline');
+  phases.forEach(p => {
+    const div = document.createElement('div');
+    div.className = `tl-item phase-${p.phase}`;
+    div.innerHTML = `
+      <div class="tl-dot"></div>
+      <div class="tl-card">
+        <div class="tl-header">
+          <span class="tl-num">المرحلة ${p.num}</span>
+          <span class="tl-title">${p.title}</span>
+          <span class="tl-tag">${p.tag}</span>
+          <span class="tl-chevron">▾</span>
+        </div>
+        <div class="tl-body">${p.body}</div>
+      </div>`;
+    div.addEventListener('click', () => {
+      const wasOpen = div.classList.contains('open');
+      document.querySelectorAll('.tl-item.open').forEach(i => i.classList.remove('open'));
+      if (!wasOpen) div.classList.add('open');
+    });
+    tl.appendChild(div);
+  });
+}
+
+function renderSigns() {
+  const grid = document.getElementById('signsGrid');
+  signs.forEach(s => {
+    const div = document.createElement('div');
+    div.className = 'sign-card';
+    div.innerHTML = `<div class="sign-icon">${s.icon}</div><div class="sign-title">${s.title}</div><div class="sign-desc">${s.desc}</div>`;
+    grid.appendChild(div);
+  });
+}
+
+function renderMeters() {
+  const wrap = document.getElementById('meters');
+  meters.forEach(m => {
+    wrap.innerHTML += `
+      <div class="meter-wrap">
+        <div class="meter-label"><span>${m.label}</span><span>${m.val}%</span></div>
+        <div class="meter-bar"><div class="meter-fill" style="--target:${m.val}%; background:${m.color};"></div></div>
+      </div>`;
+  });
+}
+
+function renderTips() {
+  const grid = document.getElementById('tipsGrid');
+  tips.forEach(t => {
+    const div = document.createElement('div');
+    div.className = 'tip-card';
+    div.innerHTML = `<div class="tip-num">${t.num}</div><div class="tip-title">${t.title}</div><div class="tip-desc">${t.desc}</div>`;
+    grid.appendChild(div);
+  });
+}
+
+// ── SCROLL OBSERVER ───────────────────────────────────
+const observer = new IntersectionObserver(entries => {
+  entries.forEach(e => {
+    if (e.isIntersecting) {
+      e.target.classList.add('visible');
+      // animate meters when section 4 visible
+      if (e.target.id === 's4') {
+        setTimeout(() => {
+          document.querySelectorAll('.meter-fill').forEach(f => f.classList.add('animated'));
+        }, 200);
+      }
+    }
+  });
+}, { threshold: 0.1 });
+
+document.querySelectorAll('.section').forEach(s => observer.observe(s));
+
+// ── INIT ──────────────────────────────────────────────
+renderTimeline();
+renderSigns();
+renderMeters();
+renderTips();
+</script>
+</body>
+</html>
